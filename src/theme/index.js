@@ -1,2 +1,2 @@
-export * from "./AppThene"
+export * from "./AppTheme"
 export * from "./purpleTheme"
