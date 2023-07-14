@@ -1,13 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export const useForm = (initialForm = {}, formValidations = {}) => {
   const [formValidation, setFormValidation] = useState({});
   const [formState, setFormState] = useState(initialForm);
 
   useEffect(() => {
-    createValidators()
-  }, [formState])
-  
+    createValidators();
+  }, [formState]);
+
+  const isFormValid = useMemo(() => {
+    for (const formValue of Object.keys(formValidation)) {
+      if (formValidation[formValue] !== null) return false;
+    }
+    return true;
+  }, [formValidation]);
 
   const onInputChange = ({ target }) => {
     const { name, value } = target;
@@ -22,13 +28,16 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
   };
 
   const createValidators = () => {
-    const formCheckedValues = {}
+    const formCheckedValues = {};
 
     for (const formField of Object.keys(formValidations)) {
-        const [fn, errorMessage = 'Este campo es requerido'] = formValidations[formField]
+      const [fn, errorMessage = "Este campo es requerido"] =
+        formValidations[formField];
 
-        formCheckedValues[`${formField}Valid`] = fn(formState[formField]) ? null : errorMessage
-        setFormValidation(formCheckedValues)
+      formCheckedValues[`${formField}Valid`] = fn(formState[formField])
+        ? null
+        : errorMessage;
+      setFormValidation(formCheckedValues);
     }
   };
 
@@ -37,6 +46,7 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
     formState,
     onInputChange,
     onResetForm,
-    ...formValidation
+    ...formValidation,
+    isFormValid,
   };
 };
