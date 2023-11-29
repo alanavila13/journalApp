@@ -5,6 +5,10 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
   const [formState, setFormState] = useState(initialForm);
 
   useEffect(() => {
+    setFormState(initialForm);
+  }, [initialForm]);
+
+  useEffect(() => {
     createValidators();
   }, [formState]);
 
